@@ -12,11 +12,24 @@ List of things that need to be done:
 TODO TODO TODO TODO TODO TODO
 */
 
+// A cross-browser requestAnimationFrame
+// See https://hacks.mozilla.org/2011/08/animating-with-javascript-from-setinterval-to-requestanimationframe/
+var requestAnimFrame = (function(){
+    return window.requestAnimationFrame       ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame    ||
+        window.oRequestAnimationFrame      ||
+        window.msRequestAnimationFrame     ||
+        function(callback){
+            window.setTimeout(callback, 1000 / 60);
+        };
+})();
+
 //Creating the canvas
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d"); //2d canvas
-canvas.width = 512; //Width of canvas in pixels, should be edited later
-canvas.height = 480; // Height of canvas in pixels, should be edited later
+canvas.width = 1024; //Width of canvas in pixels, should be edited later
+canvas.height = 512; // Height of canvas in pixels, should be edited later
 document.body.appendChild(canvas);
 //Canvas creation finished
 
@@ -36,7 +49,8 @@ function main() {
 
 
 function init() {
-  mapPattern = ctx.createPattern(resources.get('../sprites/background/background.png'), 'repeat'); //DONE: make a background image and link it. Literally a black rectangle the size of canvas
+  mapPattern = ctx.createPattern(resources.get('./sprites/background/background.png'), 'repeat'); //DONE: make a background image and link it. Literally a black rectangle the size of canvas
+
 
   document.getElementById('play-again').addEventListener('click', function(){ //TODO: Edit this so it links to the main menu, a bit confusing right now
     reset();
@@ -49,25 +63,25 @@ function init() {
 
 //Variables with obstacle sprites WARNING. MUST LOAD IMAGES FIRST. DONE: ACTUALLY LINK THEM TO sprites
 
-var obstacles = resources.load([
-  '../sprites/obstacles/squareObstacle.png', //square
-  '../sprites/obstacles/rectangleObstacle.png', //rectangle
-  '../sprites/obstacles/triangleObstacle.png', //triangle
-  '../sprites/obstacles/triangleObstacle.png', //circle
+resources.load([
+  './sprites/obstacles/squareObstacle.png', //square
+  './sprites/obstacles/rectangleObstacle.png', //rectangle
+  './sprites/obstacles/triangleObstacle.png', //triangle
+  './sprites/obstacles/triangleObstacle.png', //circle
 ])
 
 //DEAR GOD SPRITES MUST BE LINKED.
 resources.load([
-  '../sprites/player/player.png', //player
-  '../sprites/background/background.png', //background
+  './sprites/player/player.png', //player
+  './sprites/background/background.png', //background
 ])
-
+resources.onReady(init);
 
 
 //Game state
 var player = { //Player object containing position and sprite
   pos: [0, 0],  //Player coordinates
-  sprite: new Sprite('../sprites/player/player.png', [0, 0], [64, 64], 16, [0,1,2,3,4,5,4,3,2,1]); //DONE: Give sprite parameters and file
+  sprite: new Sprite('./sprites/player/player.png', [0, 0], [64, 64], 16, [0,1,2,3,4,5,4,3,2,1]) //DONE: Give sprite parameters and file
 };
 
 var liveObstacles = []; //Array of obstacles
@@ -81,6 +95,8 @@ var scoreEl = document.getElementById('score');
 
 var playerSpeed = 200; //Numbers should be tweaked later
 var obstacleSpeed = 100;
+
+
 //Update function
 function update(dt) {
 
@@ -93,8 +109,8 @@ function update(dt) {
     liveObstacles.push({ //Puts a new obstacle in the obstacles array
       pos: [canvas.width, //Setting a random position
             Math.random() * (canvas.height - 64)], //Value of 64 as that is the height of the sprite
-      sprite: new Sprite(obstacles[Math.random()*4|0], [0, 0], [64, 64], 6, [0] ) //Creating a new random sprite from the obstacles array
-      //TODO: HOLY CRAP WHAT ARE THOSE PARAMETERS. THE DOCUMENTATION IS SO USELESS. THE HELL?!?
+      sprite: new Sprite('./sprites/obstacles/rectangleObstacle.png', [0, 0], [64, 64], 6, [0] ) //Creating a new random sprite from the obstacles array
+      //TODO: HOLY CRAP WHAT ARE THOSE PARAMETERS. THE DOCUMENTATION IS SO USELESS. THE HELL?!? Also save this code for getting a random obstacle: obstacles[Math.random()*4|0]
     })
   }
 
@@ -103,6 +119,24 @@ function update(dt) {
   scoreEl.innerHTML = score;
 
 };
+
+function handleInput(dt) {
+    if(input.isDown('DOWN') || input.isDown('s')) {
+        player.pos[1] += playerSpeed * dt;
+    }
+
+    if(input.isDown('UP') || input.isDown('w')) {
+        player.pos[1] -= playerSpeed * dt;
+    }
+
+    if(input.isDown('LEFT') || input.isDown('a')) {
+        player.pos[0] -= playerSpeed * dt;
+    }
+
+    if(input.isDown('RIGHT') || input.isDown('d')) {
+        player.pos[0] += playerSpeed * dt;
+    }
+  }
 
 //Function to update all the entities
 function updateEntities(dt) {
@@ -129,7 +163,7 @@ function updateEntities(dt) {
 
 //collisions
 
-function collides(x, y, b, x2, y2, r2, b2) {
+function collides(x, y, r, b, x2, y2, r2, b2) {
   return !(r <= x2 || x > r2 ||
             b <= y2 || y > b2);
 }
@@ -150,7 +184,7 @@ function checkCollisions() {
       var size = liveObstacles[i].sprite.size;
 
       if(boxCollides(pos, size, player.pos, player.sprite.size)){ //If they collide
-        /* liveObstacles[i]; */ //TODO Find a way to make that box glow. Damn.
+         console.log('I love everything');//liveObstacles[i];  //TODO Find a way to make that box glow. Damn.
       }
   }
 }
@@ -160,11 +194,7 @@ function checkPlayerBounds(){
   if(player.pos[0] < 0) { //If the player is off the left side of the screen
     gameOver(); //Game over
   }
-  /*
-  else if(player.pos[0] > canvas.width - player.sprite.size[0]) {
-    player.pos[0] = canvas.width - player.sprite.size[0];
-  }
-  */
+
 
   if(player.pos[1] < 0) { //If the player is floating off the screen
     player.pos[1] = 0; //SOMEBODY STOP HIM, HE'S GOING TO JUMP!
