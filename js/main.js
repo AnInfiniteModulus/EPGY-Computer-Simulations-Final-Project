@@ -6,8 +6,49 @@ canvas.height = 480; // Height of canvas in pixels, should be edited later
 document.body.appendChild(canvas);
 //Canvas creation finished
 
-//Variables with obstacle sprites TODO: ACTUALLY LINK THEM TO sprites
-var obstacles = ['','','',''] //0 should be square, 1: rectangle, 2: circle, 3:  triangle
+
+//The main game loop
+var lastTime;
+function main() {
+  var now = Date.now(); //sets now to the current time
+  var dt = (now - lastTime) / 1000.0; //sets dt (difference in time) to now - the previous time
+
+  update(dt); //Updates scene with time since last frame
+  render(); //renders the scene
+
+  lastTime = now; //sets last time to the last current time
+  requestAnimFrame(main); //queues the next game loop
+};
+
+
+function init() {
+  mapPattern = ctx.createPattern(resources.get(''), 'repeat'); //TODO: make a background image and link it. Literally a black rectangle the size of canvas
+
+  document.getElementById('play-again').addEventListener('click', function(){ //TODO: Edit this so it links to the main menu, a bit confusing right now
+    reset();
+  });
+
+  reset();
+  lastTime = Date.now();
+  main();
+}
+
+//Variables with obstacle sprites WARNING. MUST LOAD IMAGES FIRST. TODO: ACTUALLY LINK THEM TO sprites
+
+var obstacles = resources.load([
+  '', //square
+  '', //rectangle
+  '', //triangle
+  '', //circle
+])
+
+//DEAR GOD SPRITES MUST BE LINKED.
+resources.load([
+  '', //player
+  '', //background
+])
+
+
 
 //Game state
 var player = { //Player object containing position and sprite
@@ -24,6 +65,9 @@ var isGameOver; //Boolean value checking whether game is over or not
 var score = 0;
 var scoreEl = document.getElementById('score');
 
+var playerSpeed = 200; //Numbers should be tweaked later
+var bulletSpeed = 500;
+var enemySpeed = 100;
 //Update function
 function update(dt) {
 
@@ -36,7 +80,7 @@ function update(dt) {
     liveObstacles.push({ //Puts a new obstacle in the obstacles array
       pos: [canvas.width, //Setting a random position
             Math.random() * (canvas.height - 64)], //Value of 64 as that is the height of the sprite
-      sprite: new Sprite(obstacles[Math.random()*5|0], [0, 0], [64, 64], 6, [0] ) //Creating a new random sprite from the obstacles array
+      sprite: new Sprite(obstacles[Math.random()*4|0], [0, 0], [64, 64], 6, [0] ) //Creating a new random sprite from the obstacles array
       //TODO: HOLY CRAP WHAT ARE THOSE PARAMETERS. THE DOCUMENTATION IS SO USELESS. THE HELL?!?
     })
   }
@@ -46,16 +90,3 @@ function update(dt) {
   scoreEl.innerHTML = score;
 
 };
-
-//The main game loop
-var lastTime;
-function main() {
-  var now = Date.now(); //sets now to the current time
-  var dt = (now - lastTime) / 1000.0; //sets dt (difference in time) to now - the previous time
-
-  update(dt); //Updates scene with time since last frame
-  render(); //renders the scene
-
-  lastTime = now; //sets last time to the last current time
-  requestAnimFrame(main); //queues the next game loop
-}
