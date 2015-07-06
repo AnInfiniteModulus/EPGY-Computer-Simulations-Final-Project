@@ -1,8 +1,20 @@
+/*
+TODO TODO TODO TODO TODO TODO
+List of things that need to be done:
+- Link sprites and hook that stuff up
+- Automatic wall placement and replication. Look at background code for help
+- Player on the damn screen.
+- Find those parameters for the sprite function. It's really annoying.
+- Insert witty puns as comments wherever possible
+- Reorganize code
+TODO TODO TODO TODO TODO TODO
+*/
+
 //Creating the canvas
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d"); //2d canvas
-canvas.width = 512; //Width of canvas in pixels, should be edited later
-canvas.height = 480; // Height of canvas in pixels, should be edited later
+canvas.width = 1024; //Width of canvas in pixels, should be edited later
+canvas.height = 512; // Height of canvas in pixels, should be edited later
 document.body.appendChild(canvas);
 //Canvas creation finished
 
@@ -66,8 +78,7 @@ var score = 0;
 var scoreEl = document.getElementById('score');
 
 var playerSpeed = 200; //Numbers should be tweaked later
-var bulletSpeed = 500;
-var enemySpeed = 100;
+var obstacleSpeed = 100;
 //Update function
 function update(dt) {
 
@@ -90,3 +101,26 @@ function update(dt) {
   scoreEl.innerHTML = score;
 
 };
+
+//Function to update all the entities
+function updateEntities(dt) {
+  //Updates player sprite animation
+  player.sprite.update(dt);
+
+  //Sets isGameOver to true if the player is off the screen
+  if(player.pos + player.sprite.size[0] < 0) {
+   isGameOver = true;
+ }
+
+  //Updates all the enemies
+  for(var i=0; i < liveObstacles; i++){
+    liveObstacles[i].pos[0] -= obstacleSpeed * dt;
+    liveObstacles[i].sprite.update(dt);
+
+    //removes the object if it goes off screen
+    if(liveObstacles[i].pos[0] + liveObstacles[i].sprite.size[0] < 0) {
+      liveObstacles.splice(i, 1);
+      i--;
+    }
+  }
+}
