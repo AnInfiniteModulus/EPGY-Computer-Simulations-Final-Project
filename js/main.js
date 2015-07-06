@@ -1,20 +1,22 @@
 /*
 TODO TODO TODO TODO TODO TODO
 List of things that need to be done:
-- Link sprites and hook that stuff up
+-  DONE 7/6/2015 1:59 PM: Link sprites and hook that stuff up
 - Automatic wall placement and replication. Look at background code for help
-- Player on the damn screen.
+-  DONE 7/6/2015 1:59 PM: Player on the damn screen.
 - Find those parameters for the sprite function. It's really annoying.
-- Insert witty puns as comments wherever possible
+-  THE FIGHT NEVER ENDS: Insert witty puns as comments wherever possible
 - Reorganize code
+- MAKE THE BOX GLOW.
+- Obstacles need to actually push player around
 TODO TODO TODO TODO TODO TODO
 */
 
 //Creating the canvas
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d"); //2d canvas
-canvas.width = 1024; //Width of canvas in pixels, should be edited later
-canvas.height = 512; // Height of canvas in pixels, should be edited later
+canvas.width = 512; //Width of canvas in pixels, should be edited later
+canvas.height = 480; // Height of canvas in pixels, should be edited later
 document.body.appendChild(canvas);
 //Canvas creation finished
 
@@ -34,7 +36,7 @@ function main() {
 
 
 function init() {
-  mapPattern = ctx.createPattern(resources.get(''), 'repeat'); //TODO: make a background image and link it. Literally a black rectangle the size of canvas
+  mapPattern = ctx.createPattern(resources.get('../sprites/background/background.png'), 'repeat'); //DONE: make a background image and link it. Literally a black rectangle the size of canvas
 
   document.getElementById('play-again').addEventListener('click', function(){ //TODO: Edit this so it links to the main menu, a bit confusing right now
     reset();
@@ -45,19 +47,19 @@ function init() {
   main();
 }
 
-//Variables with obstacle sprites WARNING. MUST LOAD IMAGES FIRST. TODO: ACTUALLY LINK THEM TO sprites
+//Variables with obstacle sprites WARNING. MUST LOAD IMAGES FIRST. DONE: ACTUALLY LINK THEM TO sprites
 
 var obstacles = resources.load([
-  '', //square
-  '', //rectangle
-  '', //triangle
-  '', //circle
+  '../sprites/obstacles/squareObstacle.png', //square
+  '../sprites/obstacles/rectangleObstacle.png', //rectangle
+  '../sprites/obstacles/triangleObstacle.png', //triangle
+  '../sprites/obstacles/triangleObstacle.png', //circle
 ])
 
 //DEAR GOD SPRITES MUST BE LINKED.
 resources.load([
-  '', //player
-  '', //background
+  '../sprites/player/player.png', //player
+  '../sprites/background/background.png', //background
 ])
 
 
@@ -65,7 +67,7 @@ resources.load([
 //Game state
 var player = { //Player object containing position and sprite
   pos: [0, 0],  //Player coordinates
-  sprite: new Sprite(); //TODO: Give sprite parameters and file
+  sprite: new Sprite('../sprites/player/player.png', [0, 0], [64, 64], 16, [0,1,2,3,4,5,4,3,2,1]); //DONE: Give sprite parameters and file
 };
 
 var liveObstacles = []; //Array of obstacles
@@ -124,3 +126,98 @@ function updateEntities(dt) {
     }
   }
 }
+
+//collisions
+
+function collides(x, y, b, x2, y2, r2, b2) {
+  return !(r <= x2 || x > r2 ||
+            b <= y2 || y > b2);
+}
+
+function boxCollides(pos, size, pos2, size2) {
+  return collides(pos[0], pos[1],
+                  pos[0] + size[0], pos[1] + size[1],
+                  pos2[0], pos2[1],
+                  pos2[0] + size2[0], pos2[1] + size2[1]);
+}
+
+function checkCollisions() {
+  checkPlayerBounds();
+
+  //Collision detection for all obstacles + player
+  for(var i=0; i<liveObstacles.length; i++) { //Check every obstacles' coordinates against the players
+      var pos = liveObstacles[i].pos;
+      var size = liveObstacles[i].sprite.size;
+
+      if(boxCollides(pos, size, player.pos, player.sprite.size)){ //If they collide
+        /* liveObstacles[i]; */ //TODO Find a way to make that box glow. Damn.
+      }
+  }
+}
+
+function checkPlayerBounds(){
+  //checks bounds
+  if(player.pos[0] < 0) { //If the player is off the left side of the screen
+    gameOver(); //Game over
+  }
+  /*
+  else if(player.pos[0] > canvas.width - player.sprite.size[0]) {
+    player.pos[0] = canvas.width - player.sprite.size[0];
+  }
+  */
+
+  if(player.pos[1] < 0) { //If the player is floating off the screen
+    player.pos[1] = 0; //SOMEBODY STOP HIM, HE'S GOING TO JUMP!
+  }
+  else if(player.pos[1] > canvas.height - player.sprite.size[1]) { //Otherwise if he's touching the boarder
+    player.pos[1] = canvas.height - player.sprite.size[1] //Don't let him move (FREEZE)
+  }
+
+  //TODO get obstacles to actually block the player
+}
+
+//RENDERING!
+function render() {
+  ctx.fillStyle = mapPattern;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Renders the player, as long as the game isn't over
+  if(!isGameOver) {
+    renderEntity(player);
+  }
+
+  renderEntities(liveObstacles);
+};
+
+function renderEntities(list) {
+  for(var i=0; i<list.length; i++) {
+    renderEntity(list[i]);
+  }
+}
+
+function renderEntity(entity) {
+  ctx.save();
+  ctx.translate(entity.pos[0], entity.pos[1]);
+  entity.sprite.render(ctx);
+  ctx.restore();
+}
+
+//Game over
+function gameOver() {
+  document.getElementById('game-over').style.display = 'block';
+  document.getElementById('game-over-overlay').style.display = 'block';
+  isGameOver = true;
+}
+
+//Reset game
+function reset() {
+  document.getElementById('game-over').style.display = 'none';
+  document.getElementById('game-over-overlay').style.display = 'none';
+  isGameOver = false;
+  gameTime = 0;
+  score = 0;
+
+  liveObstacles = [];
+
+  player.pos = [50, canvas.height / 2];
+};
