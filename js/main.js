@@ -82,6 +82,7 @@ resources.onReady(init);
 var player = { //Player object containing position and sprite
   pos: [0, 0],  //Player coordinates
   sprite: new Sprite('./sprites/player/player.png', [0, 0], [64, 64], 16, [0,1,2,3,4,5,4,3,2,1]) //DONE: Give sprite parameters and file
+  
 };
 
 var liveObstacles = []; //Array of obstacles
@@ -192,7 +193,7 @@ function checkCollisions() {
 
 function checkPlayerBounds(){
   //checks bounds
-  if(player.pos[0] < 0) { //If the player is off the left side of the screen
+  if(player.pos[0] < 0 - player.sprite.size[0]) { //If the player is off the left side of the screen
     gameOver(); //Game over
   }
 
