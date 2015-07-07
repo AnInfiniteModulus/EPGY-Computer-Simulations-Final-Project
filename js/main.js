@@ -25,6 +25,7 @@ var requestAnimFrame = (function(){
         };
 })();
 
+
 //Creating the canvas
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d"); //2d canvas
@@ -33,6 +34,16 @@ canvas.height = 512; // Height of canvas in pixels, should be edited later
 document.body.appendChild(canvas);
 //Canvas creation finished
 
+function glow(pos1, pos2){
+  var canvas=document.getElementById('canvas');
+  //if (canvas.getContext) {
+    //var canvas = document.getElementById('canvas');
+    //var context = canvas.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(pos1, pos2, 64, 21.3);
+  //}
+  console.log('RAINBOWWWSSSS');
+}
 
 //The main game loop
 var lastTime;
@@ -45,6 +56,7 @@ function main() {
 
   lastTime = now; //sets last time to the last current time
   requestAnimFrame(main); //queues the next game loop
+  score++;
 };
 
 
@@ -110,7 +122,7 @@ function update(dt) {
     liveObstacles.push({ //Puts a new obstacle in the obstacles array
       pos: [canvas.width, //Setting a random position
             Math.random() * (canvas.height - 64)], //Value of 64 as that is the height of the sprite
-      sprite: new Sprite('./sprites/player/player.png', [0, 0], [64, 64],16,[0,1,2,3,4,5,4,3,2,1]) //Creating a new random sprite from the obstacles array
+      sprite: new Sprite('./sprites/obstacles/rectangleObstacle.png', [0, 0], [64, 64]) //Creating a new random sprite from the obstacles array
       //TODO: HOLY CRAP WHAT ARE THOSE PARAMETERS. THE DOCUMENTATION IS SO USELESS. THE HELL?!? Also save this code for getting a random obstacle: obstacles[Math.random()*4|0]
     })
   }
@@ -186,7 +198,9 @@ function checkCollisions() {
       var size = liveObstacles[i].sprite.size;
 
       if(boxCollides(pos, size, player.pos, player.sprite.size)){//If they collide
-         player.pos[0] -= 10;//liveObstacles[i];  //TODO Find a way to make that box glow. Damn.
+         player.pos[0] -= 7;//liveObstacles[i];  //TODO Find a way to make that box glow. Damn.
+         glow(liveObstacles[i].pos1, liveObstacles[i].pos2);
+         console.log(liveObstacles[i]);
       }
   }
 }
