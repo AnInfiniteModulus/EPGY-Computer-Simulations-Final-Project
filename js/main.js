@@ -109,7 +109,7 @@ function update(dt) {
     liveObstacles.push({ //Puts a new obstacle in the obstacles array
       pos: [canvas.width, //Setting a random position
             Math.random() * (canvas.height - 64)], //Value of 64 as that is the height of the sprite
-      sprite: new Sprite('./sprites/obstacles/rectangleObstacle.png', [0, 0], [64, 64], 6, [0] ) //Creating a new random sprite from the obstacles array
+      sprite: new Sprite('./sprites/player/player.png', [0, 0], [64, 64],16,[0,1,2,3,4,5,4,3,2,1]) //Creating a new random sprite from the obstacles array
       //TODO: HOLY CRAP WHAT ARE THOSE PARAMETERS. THE DOCUMENTATION IS SO USELESS. THE HELL?!? Also save this code for getting a random obstacle: obstacles[Math.random()*4|0]
     })
   }
@@ -148,9 +148,11 @@ function updateEntities(dt) {
    isGameOver = true;
  }
 
+
   //Updates all the enemies
-  for(var i=0; i < liveObstacles; i++){
+  for(var i=0; i < liveObstacles.length; i++){
     liveObstacles[i].pos[0] -= obstacleSpeed * dt;
+    console.log(liveObstacles[i].pos[0]);
     liveObstacles[i].sprite.update(dt);
 
     //removes the object if it goes off screen
@@ -184,7 +186,7 @@ function checkCollisions() {
       var size = liveObstacles[i].sprite.size;
 
       if(boxCollides(pos, size, player.pos, player.sprite.size)){ //If they collide
-         console.log('I love everything');//liveObstacles[i];  //TODO Find a way to make that box glow. Damn.
+         console.log(liveObstacles[i].pos);//liveObstacles[i];  //TODO Find a way to make that box glow. Damn.
       }
   }
 }
