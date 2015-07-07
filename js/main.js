@@ -152,7 +152,6 @@ function updateEntities(dt) {
   //Updates all the enemies
   for(var i=0; i < liveObstacles.length; i++){
     liveObstacles[i].pos[0] -= obstacleSpeed * dt;
-    console.log(liveObstacles[i].pos[0]);
     liveObstacles[i].sprite.update(dt);
 
     //removes the object if it goes off screen
@@ -185,8 +184,8 @@ function checkCollisions() {
       var pos = liveObstacles[i].pos;
       var size = liveObstacles[i].sprite.size;
 
-      if(boxCollides(pos, size, player.pos, player.sprite.size)){ //If they collide
-         console.log(liveObstacles[i].pos);//liveObstacles[i];  //TODO Find a way to make that box glow. Damn.
+      if(boxCollides(pos, size, player.pos, player.sprite.size)){//If they collide
+         player.pos[0] -= 10;//liveObstacles[i];  //TODO Find a way to make that box glow. Damn.
       }
   }
 }
@@ -203,9 +202,7 @@ function checkPlayerBounds(){
   }
   else if(player.pos[1] > canvas.height - player.sprite.size[1]) { //Otherwise if he's touching the boarder
     player.pos[1] = canvas.height - player.sprite.size[1] //Don't let him move (FREEZE)
-  }
-
-  //TODO get obstacles to actually block the player
+  }//TODO get obstacles to actually block the player
 }
 
 //RENDERING!
