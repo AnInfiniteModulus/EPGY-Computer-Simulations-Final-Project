@@ -35,7 +35,6 @@ document.body.appendChild(canvas);
 //Canvas creation finished
 
 function glow(pos1, pos2){
-  var canvas=document.getElementById('canvas');
   //if (canvas.getContext) {
     //var canvas = document.getElementById('canvas');
     //var context = canvas.getContext('2d');
