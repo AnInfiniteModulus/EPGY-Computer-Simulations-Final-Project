@@ -34,12 +34,12 @@ canvas.height = 512; // Height of canvas in pixels, should be edited later
 document.body.appendChild(canvas);
 //Canvas creation finished
 
-function glow(pos1, pos2){
+function glow(obstacle){
   //if (canvas.getContext) {
     //var canvas = document.getElementById('canvas');
     //var context = canvas.getContext('2d');
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(pos1, pos2, 64, 21.3);
+    ctx.fillRect(obstacle.pos[0], obstacle.pos[1], 64, 21.3);
   //}
   console.log('RAINBOWWWSSSS');
 }
@@ -55,12 +55,14 @@ function main() {
 
   lastTime = now; //sets last time to the last current time
   requestAnimFrame(main); //queues the next game loop
-  score++;
+  if (!isGameOver){
+    score++;
+  }
 };
 
 
 function init() {
-  mapPattern = ctx.createPattern(resources.get('./sprites/background/background.png'), 'repeat'); //DONE: make a background image and link it. Literally a black rectangle the size of canvas
+  //mapPattern = ctx.createPattern(resources.get('./sprites/background/background.png'), 'repeat'); //DONE: make a background image and link it. Literally a black rectangle the size of canvas
 
 
   document.getElementById('play-again').addEventListener('click', function(){ //TODO: Edit this so it links to the main menu, a bit confusing right now
@@ -93,7 +95,7 @@ resources.onReady(init);
 var player = { //Player object containing position and sprite
   pos: [0, 0],  //Player coordinates
   sprite: new Sprite('./sprites/player/player.png', [0, 0], [64, 64], 16, [0,1,2,3,4,5,4,3,2,1]) //DONE: Give sprite parameters and file
-  
+
 };
 
 var liveObstacles = []; //Array of obstacles
@@ -117,7 +119,7 @@ function update(dt) {
   updateEntities(dt);
 
   //AI for creating obstacles
-  if(Math.random() < 1 - Math.pow(.993, gameTime)){ //Makes the game harder and harder
+  if(Math.random() < 1 - Math.pow(.999, gameTime)){ //Makes the game harder and harder
     liveObstacles.push({ //Puts a new obstacle in the obstacles array
       pos: [canvas.width, //Setting a random position
             Math.random() * (canvas.height - 64)], //Value of 64 as that is the height of the sprite
@@ -198,7 +200,7 @@ function checkCollisions() {
 
       if(boxCollides(pos, size, player.pos, player.sprite.size)){//If they collide
          player.pos[0] -= 7;//liveObstacles[i];  //TODO Find a way to make that box glow. Damn.
-         glow(liveObstacles[i].pos1, liveObstacles[i].pos2);
+         glow(liveObstacles[i]);
          console.log(liveObstacles[i]);
       }
   }
@@ -209,7 +211,9 @@ function checkPlayerBounds(){
   if(player.pos[0] < 0 - player.sprite.size[0]) { //If the player is off the left side of the screen
     gameOver(); //Game over
   }
-
+  else if(player.pos[0] > canvas.width - player.sprite.size[0]){
+    player.pos[0] = canvas.width - player.sprite.size[0];
+  }
 
   if(player.pos[1] < 0) { //If the player is floating off the screen
     player.pos[1] = 0; //SOMEBODY STOP HIM, HE'S GOING TO JUMP!
@@ -221,7 +225,7 @@ function checkPlayerBounds(){
 
 //RENDERING!
 function render() {
-  ctx.fillStyle = mapPattern;
+  ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Renders the player, as long as the game isn't over
