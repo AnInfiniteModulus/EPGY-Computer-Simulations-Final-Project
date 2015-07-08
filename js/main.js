@@ -2,13 +2,16 @@
 TODO TODO TODO TODO TODO TODO
 List of things that need to be done:
 -  DONE 7/6/2015 1:59 PM: Link sprites and hook that stuff up
-- Automatic wall placement and replication. Look at background code for help
+-  UNNEEDED: Automatic wall placement and replication. Look at background code for help
 -  DONE 7/6/2015 1:59 PM: Player on the damn screen.
-- Find those parameters for the sprite function. It's really annoying.
+-  DONE 7/7/15 2:44 PM Find those parameters for the sprite function. It's really annoying.
 -  THE FIGHT NEVER ENDS: Insert witty puns as comments wherever possible
 - Reorganize code
+- DONE 7/7/15 2:44: Stop player from flying off the side of the screen
 - MAKE THE BOX GLOW.
 - Obstacles need to actually push player around
+- Fix obstacle spawning
+- Fix collision boxes around obstacles
 TODO TODO TODO TODO TODO TODO
 */
 
@@ -49,18 +52,19 @@ var lastTime;
 function main() {
   var now = Date.now(); //sets now to the current time
   var dt = (now - lastTime) / 1000.0; //sets dt (difference in time) to now - the previous time
+  var counter = 0;
 
   update(dt); //Updates scene with time since last frame
   render(); //renders the scene
 
   lastTime = now; //sets last time to the last current time
   requestAnimFrame(main); //queues the next game loop
-  if (!isGameOver){
+  if (!isGameOver && gameStart == true){
     score++;
   }
 };
 
-
+var gameStart = false;
 function init() {
   //mapPattern = ctx.createPattern(resources.get('./sprites/background/background.png'), 'repeat'); //DONE: make a background image and link it. Literally a black rectangle the size of canvas
 
@@ -68,7 +72,14 @@ function init() {
   document.getElementById('play-again').addEventListener('click', function(){ //TODO: Edit this so it links to the main menu, a bit confusing right now
     reset();
   });
-
+  document.getElementById('play').addEventListener('click', function(){
+    document.getElementById('title-screen').style.display = 'none';
+    document.getElementById('title-screen-overlay').style.display = 'none';
+    reset();
+    gameStart = true;
+  });
+  document.getElementById('title-screen').style.display = 'block';
+  document.getElementById('title-screen-overlay').style.display = 'block';
   reset();
   lastTime = Date.now();
   main();
@@ -208,7 +219,7 @@ function checkCollisions() {
 
 function checkPlayerBounds(){
   //checks bounds
-  if(player.pos[0] < 0 - player.sprite.size[0]) { //If the player is off the left side of the screen
+  if(player.pos[0] < 0  - player.sprite.size[0]) { //If the player is off the left side of the screen
     gameOver(); //Game over
   }
   else if(player.pos[0] > canvas.width - player.sprite.size[0]){
@@ -225,15 +236,16 @@ function checkPlayerBounds(){
 
 //RENDERING!
 function render() {
-  ctx.fillStyle = '#000';
+  ctx.fillStyle = '#EEE';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Renders the player, as long as the game isn't over
-  if(!isGameOver) {
+  if(!isGameOver && gameStart == true) {
     renderEntity(player);
   }
-
-  renderEntities(liveObstacles);
+  if(!isGameOver && gameStart == true){
+    renderEntities(liveObstacles);
+}
 };
 
 function renderEntities(list) {
@@ -253,6 +265,7 @@ function renderEntity(entity) {
 function gameOver() {
   document.getElementById('game-over').style.display = 'block';
   document.getElementById('game-over-overlay').style.display = 'block';
+  if(!alert('Game Over, filthy casuals, your pathetic score was ' + score)){window.location.reload();}
   isGameOver = true;
 }
 
