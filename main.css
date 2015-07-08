@@ -21,6 +21,11 @@ canvas {
     margin-top: 2em;
 }
 
+#play {
+  position:relative;
+  top: 170px;
+}
+
 #instructions {
     float: left;
     font-family: century gothic;
