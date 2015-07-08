@@ -25,6 +25,7 @@ canvas {
     float: left;
     font-family: century gothic;
     color: #757575;
+	font-size: 1.3em;
 }
 
 #score {
