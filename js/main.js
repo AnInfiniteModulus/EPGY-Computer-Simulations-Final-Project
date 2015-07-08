@@ -268,7 +268,7 @@ function renderEntity(entity) {
 function gameOver() {
   document.getElementById('game-over').style.display = 'block';
   document.getElementById('game-over-overlay').style.display = 'block';
-  if(!alert('Game Over. your score was ' + score)){window.location.reload();}
+  if(!alert('Game Over. Your score was ' + score)){window.location.reload();}
   isGameOver = true;
 }
 
