@@ -23,14 +23,14 @@ canvas {
 
 #instructions {
     float: left;
-    font-family: sans-serif;
+    font-family: century gothic;
     color: #757575;
 }
 
 #score {
     float: right;
     color: white;
-    font-size: 2em;
+    font-size: 3em;
 }
 
 .key {
@@ -87,7 +87,7 @@ canvas {
 
 #game-over h1 {
     font-size: 3em;
-    font-family: sans-serif;
+    font-family: century gothic;
 }
 
 #game-over button {
