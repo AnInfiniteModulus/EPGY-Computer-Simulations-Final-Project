@@ -211,7 +211,10 @@ function checkCollisions() {
 
       if(boxCollides(pos, size, player.pos, player.sprite.size)){//If they collide
          player.pos[0] -= 7;//liveObstacles[i];  //TODO Find a way to make that box glow. Damn.
-         glow(liveObstacles[i]);
+         liveObstacles.push({
+           pos: [liveObstacles[i].pos[0], liveObstacles[i].pos[1]],
+           sprite: new Sprite("./sprites/obstacles/rectangleObstacle.png", [0,0], [64,64], 16, [0,1,2,3,2,1], false)
+         });
          console.log(liveObstacles[i]);
       }
   }
@@ -236,7 +239,7 @@ function checkPlayerBounds(){
 
 //RENDERING!
 function render() {
-  ctx.fillStyle = '#EEE';
+  ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Renders the player, as long as the game isn't over
@@ -265,7 +268,7 @@ function renderEntity(entity) {
 function gameOver() {
   document.getElementById('game-over').style.display = 'block';
   document.getElementById('game-over-overlay').style.display = 'block';
-  if(!alert('Game Over, filthy casuals, your pathetic score was ' + score)){window.location.reload();}
+  if(!alert('Game Over. your score was ' + score)){window.location.reload();}
   isGameOver = true;
 }
 
