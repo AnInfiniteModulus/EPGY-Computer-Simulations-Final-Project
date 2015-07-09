@@ -11,7 +11,7 @@ List of things that need to be done:
 - MAKE THE BOX GLOW.
 - Obstacles need to actually push player around
 - Fix obstacle spawning
-- Fix collision boxes around obstacles
+
 TODO TODO TODO TODO TODO TODO
 */
 
