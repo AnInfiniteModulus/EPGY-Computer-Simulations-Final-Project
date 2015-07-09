@@ -89,7 +89,7 @@ function init() {
 
 resources.load([
   './sprites/obstacles/squareObstacle.png', //square
-  './sprites/obstacles/rectangleObstacle.png', //rectangle
+  './sprites/obstacles/RectangleObstacle.png', //rectangle
   './sprites/obstacles/triangleObstacle.png', //triangle
   './sprites/obstacles/triangleObstacle.png', //circle
 ])
@@ -134,7 +134,7 @@ function update(dt) {
     liveObstacles.push({ //Puts a new obstacle in the obstacles array
       pos: [canvas.width, //Setting a random position
             Math.random() * (canvas.height - 64)], //Value of 64 as that is the height of the sprite
-      sprite: new Sprite('./sprites/obstacles/rectangleObstacle.png', [0, 0], [64, 64]) //Creating a new random sprite from the obstacles array
+      sprite: new Sprite('./sprites/obstacles/RectangleObstacle.png', [0, 0], [64, 64]) //Creating a new random sprite from the obstacles array
       //TODO: HOLY CRAP WHAT ARE THOSE PARAMETERS. THE DOCUMENTATION IS SO USELESS. THE HELL?!? Also save this code for getting a random obstacle: obstacles[Math.random()*4|0]
     })
   }
@@ -213,7 +213,7 @@ function checkCollisions() {
          player.pos[0] -= 7;//liveObstacles[i];  //TODO Find a way to make that box glow. Damn.
          liveObstacles.push({
            pos: [liveObstacles[i].pos[0], liveObstacles[i].pos[1]],
-           sprite: new Sprite("./sprites/obstacles/rectangleObstacle.png", [0,0], [64,64], 16, [0,1,2,3,2,1], false)
+           sprite: new Sprite("./sprites/obstacles/RectangleObstacle.png", [0,0], [64,64], 16, [0,1,2,3,2,1], false)
          });
          console.log(liveObstacles[i]);
       }
