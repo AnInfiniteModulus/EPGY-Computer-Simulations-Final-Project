@@ -1,0 +1,100 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #151515;
+}
+
+canvas {
+    display: block;
+    margin: auto;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.wrapper {
+    width: 512px;
+    margin: 0 auto;
+    margin-top: 2em;
+}
+
+#play {
+  position:relative;
+  top: 170px;
+}
+
+#instructions {
+    float: left;
+    font-family: century gothic;
+    color: #757575;
+}
+
+#score {
+    float: right;
+    color: white;
+    font-size: 3em;
+}
+
+.key {
+    color: #aaffdd;
+}
+
+#title-screen, #title-screen-overlay {
+  margin: auto;
+  width: 1024px;
+  height: 512px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: none;
+}
+
+#title-screen-overlay {
+  background-color: black;
+  opacity: .5;
+}
+
+#title-screen {
+  height: 200px;
+  text-align: center;
+  color: white;
+}
+
+#game-over, #game-over-overlay {
+    margin: auto;
+    width: 1024px;
+    height: 512px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    display: none;
+}
+
+#game-over-overlay {
+    background-color: black;
+    opacity: .5;
+}
+
+#game-over {
+    height: 200px;
+    text-align: center;
+    color: white;
+}
+
+#game-over h1 {
+    font-size: 3em;
+    font-family: century gothic;
+}
+
+#game-over button {
+    font-size: 1.5em;
+}
